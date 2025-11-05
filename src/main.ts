@@ -8,7 +8,10 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   
   // Configurar validación global
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true, // Transforma los datos automáticamente
+    whitelist: true, // Elimina propiedades que no están en el DTO
+  }));
   
   // Servir archivos estáticos
   app.useStaticAssets(join(__dirname, '..', 'uploads'), {
