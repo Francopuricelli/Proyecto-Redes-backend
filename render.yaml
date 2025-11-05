@@ -2,7 +2,7 @@ services:
   - type: web
     name: red-social-backend
     env: node
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start:prod
     envVars:
       - key: NODE_ENV
