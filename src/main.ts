@@ -17,7 +17,8 @@ async function bootstrap() {
   
   // Configurar CORS para permitir conexiones desde el frontend
   app.enableCors({
-    origin: 'http://localhost:4200',
+    origin: ['http://localhost:4200', 'https://proyecto-redes-frontend.vercel.app'],
+    methods: ['GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS'],
     credentials: true,
   });
 
