@@ -1,19 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from '../src/app.module';
-import { ExpressAdapter } from '@nestjs/platform-express';
-import express from 'express';
 
-const expressApp = express();
-let cachedApp;
+let cachedServer;
 
-async function bootstrap() {
-  if (!cachedApp) {
-    const app = await NestFactory.create(
-      AppModule,
-      new ExpressAdapter(expressApp),
-      { logger: ['error', 'warn', 'log'] }
-    );
+async function createServer() {
+  if (!cachedServer) {
+    const app = await NestFactory.create(AppModule, {
+      logger: ['error', 'warn', 'log'],
+    });
     
     app.useGlobalPipes(new ValidationPipe());
     
@@ -21,15 +16,16 @@ async function bootstrap() {
       origin: ['http://localhost:4200', 'https://proyecto-redes-frontend.vercel.app'],
       methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
       credentials: true,
+      allowedHeaders: ['Content-Type', 'Authorization'],
     });
 
     await app.init();
-    cachedApp = app;
+    cachedServer = app.getHttpAdapter().getInstance();
   }
-  return cachedApp;
+  return cachedServer;
 }
 
-export default async (req, res) => {
-  await bootstrap();
-  expressApp(req, res);
+module.exports = async (req, res) => {
+  const server = await createServer();
+  return server(req, res);
 };
