@@ -32,6 +32,9 @@ export class User {
   @Prop({ default: 'usuario', enum: ['usuario', 'administrador'] })
   perfil: string;
 
+  @Prop({ default: true })
+  activo: boolean;
+
   @Prop({ default: Date.now })
   fechaRegistro: Date;
 }

@@ -6,6 +6,7 @@ import {
   Patch, 
   Param, 
   Delete, 
+  Put,
   UseGuards, 
   Request,
   UseInterceptors,
@@ -18,13 +19,11 @@ import { PublicacionesService } from './publicaciones.service';
 import { CrearPublicacionDto } from './dto/crear-publicacion.dto';
 import { ActualizarPublicacionDto } from './dto/actualizar-publicacion.dto';
 import { CrearComentarioDto } from './dto/crear-comentario.dto';
-import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Controller('publicaciones')
 export class PublicacionesController {
   constructor(
-    private readonly publicacionesService: PublicacionesService,
-    private readonly cloudinaryService: CloudinaryService
+    private readonly publicacionesService: PublicacionesService
   ) {}
 
   @UseGuards(JwtAuthGuard)
@@ -43,13 +42,9 @@ export class PublicacionesController {
   async crear(
     @Body() crearPublicacionDto: CrearPublicacionDto, 
     @Request() req,
-    @UploadedFile() file: Express.Multer.File
+    @UploadedFile() file?: Express.Multer.File
   ) {
-    if (file) {
-      const result = await this.cloudinaryService.uploadImage(file, 'publicaciones');
-      crearPublicacionDto.imagen = result.secure_url;
-    }
-    return await this.publicacionesService.crear(crearPublicacionDto, req.user.id);
+    return await this.publicacionesService.crear(crearPublicacionDto, req.user.id, file);
   }
 
   @Get()
@@ -59,15 +54,7 @@ export class PublicacionesController {
     @Query('offset') offset?: string,
     @Query('limit') limit?: string
   ) {
-    const offsetNum = offset ? parseInt(offset, 10) : 0;
-    const limitNum = limit ? parseInt(limit, 10) : 10;
-    
-    return await this.publicacionesService.obtenerTodas(
-      ordenarPor || 'fecha',
-      usuarioId,
-      offsetNum,
-      limitNum
-    );
+    return await this.publicacionesService.obtenerTodas(ordenarPor, usuarioId, offset, limit);
   }
 
   @Get(':id')
@@ -93,8 +80,7 @@ export class PublicacionesController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async eliminar(@Param('id') id: string, @Request() req) {
-    await this.publicacionesService.eliminar(id, req.user.id);
-    return { mensaje: 'Publicación eliminada correctamente' };
+    return await this.publicacionesService.eliminar(id, req.user.id, req.user.perfil);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -117,5 +103,30 @@ export class PublicacionesController {
     @Request() req
   ) {
     return await this.publicacionesService.agregarComentario(id, crearComentarioDto, req.user.id);
+  }
+
+  @Get(':id/comentarios')
+  async obtenerComentarios(
+    @Param('id') id: string,
+    @Query('offset') offset?: string,
+    @Query('limit') limit?: string
+  ) {
+    return await this.publicacionesService.obtenerComentarios(id, offset, limit);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put(':id/comentarios/:comentarioId')
+  async editarComentario(
+    @Param('id') publicacionId: string,
+    @Param('comentarioId') comentarioId: string,
+    @Body() editarComentarioDto: { texto: string },
+    @Request() req
+  ) {
+    return await this.publicacionesService.editarComentario(
+      publicacionId, 
+      comentarioId, 
+      editarComentarioDto.texto, 
+      req.user.id
+    );
   }
 }

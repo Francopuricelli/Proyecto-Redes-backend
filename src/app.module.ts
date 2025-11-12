@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { PublicacionesModule } from './publicaciones/publicaciones.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { EstadisticasModule } from './estadisticas/estadisticas.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     UsersModule,
     PublicacionesModule,
     CloudinaryModule,
+    EstadisticasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

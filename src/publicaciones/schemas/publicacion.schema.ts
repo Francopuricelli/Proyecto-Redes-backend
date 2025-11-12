@@ -24,7 +24,8 @@ export class Publicacion {
     type: [{
       comentario: { type: String, required: true },
       autor: { type: MongooseSchema.Types.ObjectId, ref: 'User', required: true },
-      fecha: { type: Date, default: Date.now }
+      fecha: { type: Date, default: Date.now },
+      modificado: { type: Boolean, default: false }
     }],
     default: []
   })
@@ -32,6 +33,7 @@ export class Publicacion {
     comentario: string;
     autor: MongooseSchema.Types.ObjectId;
     fecha: Date;
+    modificado: boolean;
   }[];
 
   @Prop({ default: Date.now })
