@@ -83,7 +83,7 @@ export class PublicacionesService {
     const publicaciones = await this.publicacionModel
       .find(filtro)
       .populate('autor', 'nombre apellido email nombreUsuario imagenPerfil')
-      .populate('comentarios.autor', 'nombre apellido nombreUsuario')
+      .populate('comentarios.autor', 'nombre apellido nombreUsuario imagenPerfil')
       .sort(sort)
       .skip(offsetNum)
       .limit(limitNum)
@@ -219,7 +219,7 @@ export class PublicacionesService {
         { new: true }
       )
       .populate('autor', 'nombre apellido email nombreUsuario imagenPerfil')
-      .populate('comentarios.autor', 'nombre apellido nombreUsuario')
+      .populate('comentarios.autor', 'nombre apellido nombreUsuario imagenPerfil')
       .exec();
     
     // Asegurar que el autor tenga el campo 'id'
@@ -252,7 +252,7 @@ export class PublicacionesService {
         { new: true }
       )
       .populate('autor', 'nombre apellido email nombreUsuario imagenPerfil')
-      .populate('comentarios.autor', 'nombre apellido nombreUsuario')
+      .populate('comentarios.autor', 'nombre apellido nombreUsuario imagenPerfil')
       .exec();
     
     // Asegurar que el autor tenga el campo 'id'
