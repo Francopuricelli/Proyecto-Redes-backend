@@ -92,6 +92,12 @@ export class PublicacionesService {
     // Convertir a JSON - la imagen ya viene con URL completa de Cloudinary
     return publicaciones.map(pub => {
       const publicacionObj: any = pub.toJSON();
+      
+      // Asegurar que la publicación tenga el campo 'id' además de '_id'
+      if (publicacionObj._id) {
+        publicacionObj.id = publicacionObj._id.toString();
+      }
+      
       // Agregar conteo de likes para facilitar el ordenamiento en frontend
       publicacionObj.cantidadLikes = publicacionObj.likes ? publicacionObj.likes.length : 0;
       // Asegurar que tenga el campo fecha (alias de fechaCreacion)
@@ -129,6 +135,11 @@ export class PublicacionesService {
     
     // Convertir a JSON con el mismo formato que obtenerTodas
     const publicacionObj: any = publicacion.toJSON();
+    
+    // Asegurar que la publicación tenga el campo 'id' además de '_id'
+    if (publicacionObj._id) {
+      publicacionObj.id = publicacionObj._id.toString();
+    }
     
     // Agregar conteo de likes
     publicacionObj.cantidadLikes = publicacionObj.likes ? publicacionObj.likes.length : 0;
